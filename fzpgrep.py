@@ -1,0 +1,96 @@
+#! /usr/bin/env python3
+
+import argparse
+import os
+import subprocess
+import sys
+from dataclasses import dataclass
+
+
+@dataclass
+class Executable:
+    path: str
+
+    def basename(self):
+        return os.path.basename(self.path)
+
+    def run(self):
+        subprocess.run(self.path, shell=True, check=True)
+
+    @classmethod
+    def source_from_path(cls):
+        execs = []
+        exec_dirs = os.environ["PATH"].split(":")
+        for exec_dir in exec_dirs:
+            for exec_basename in os.listdir(exec_dir):
+                exec_path = os.path.join(exec_dir, exec_basename)
+                execs.append(Executable(exec_path))
+        return execs
+
+
+def calc_levenshtein(s1, s2):
+    def init_dp_table():
+        m, n = len(s1), len(s2)
+        dp = [[0] * (n + 1) for _ in range(m + 1)]
+
+        dp[0][0] = 0
+        for i in range(1, m + 1):
+            dp[i][0] = i
+        for j in range(1, n + 1):
+            dp[0][j] = j
+
+        return dp
+
+    dp = init_dp_table()
+    m, n = len(s1), len(s2)
+
+    for i in range(1, m + 1):
+        for j in range(1, n + 1):
+            if s1[i - 1] == s2[j - 1]:
+                dp[i][j] = dp[i - 1][j - 1]
+            else:
+                dp[i][j] = 1 + min(dp[i - 1][j], dp[i][j - 1], dp[i - 1][j - 1])
+
+    return dp[m][n]
+
+
+def match_exec_path(exec_path, execs, k, distance_threshold=4):
+    """
+    Matches the `k` nearest paths at a max distance of `distance_threshold`.
+    """
+
+    distances = []
+
+    for exec_ in execs:
+        distances.append((exec_, calc_levenshtein(exec_path, exec_.basename())))
+
+    distances = [
+        (exec_, distance)
+        for exec_, distance in distances
+        if distance <= distance_threshold
+    ]
+    distances.sort(key=lambda t: t[1])
+
+    return distances[:k]
+
+
+def fzpgrep(exec_path, k=1, verbose=False):
+    execs = Executable.source_from_path()
+
+    matches = match_exec_path(exec_path, execs, k=k)
+
+    for exec_, _ in matches:
+        if verbose:
+            print(f"Running `pgrep {exec_.basename()}`...")
+        subprocess.run(f"pgrep {exec_.basename()}", shell=True, check=True)
+
+
+if __name__ == "__main__":
+    argparser = argparse.ArgumentParser(
+        prog=os.path.basename(__file__), description="Performs a fuzzy pgrep"
+    )
+    argparser.add_argument("exec")
+    argparser.add_argument("-q", "--quiet", action="store_true")
+    args = argparser.parse_args()
+
+    fzpgrep(args.exec, verbose=not args.quiet)
