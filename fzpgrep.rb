@@ -9,7 +9,6 @@ class Fzpgrep < Formula
   depends_on "python@3.11"
 
   def install
-    virtualenv_install_with_resources
     bin.install "src/fzpgrep"
   end
 
