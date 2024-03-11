@@ -3,8 +3,8 @@ class Fzpgrep < Formula
 
   desc "A fuzzy version of pgrep"
   homepage "https://github.com/nikhilkmr300/fzpgrep"
-  url "https://github.com/nikhilkmr300/fzpgrep/archive/refs/tags/v1.0.2.tar.gz"
-  sha256 "881f4f233d10a9d072770073dba7a89f27c94d8cbe2df805ad005da06e91d581"
+  url "https://github.com/nikhilkmr300/fzpgrep/archive/refs/tags/v1.0.3.tar.gz"
+  sha256 "0dc6cbf75ac9842ab25c4b5fa54a1d13473ba208d4610d2825e1216a24375ddb"
 
   depends_on "python@3.11"
 
