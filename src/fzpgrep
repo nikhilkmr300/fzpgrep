@@ -5,7 +5,7 @@ import os
 import subprocess
 import sys
 from dataclasses import dataclass
-
+import sys
 
 @dataclass
 class Executable:
@@ -94,5 +94,9 @@ if __name__ == "__main__":
 
     args, pgrep_args = argparser.parse_known_args()
     pgrep_args = " ".join(pgrep_args)
+
+    if not args.exec.isalnum():
+        sys.stderr.write(f"`exec` must be alphanumeric. Regexes are not supported.\n")
+        sys.exit(-1)
 
     fzpgrep(args.exec, pgrep_args, verbose=not args.quiet)
