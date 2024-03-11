@@ -82,7 +82,10 @@ def fzpgrep(exec_path, pgrep_args, k=1, verbose=False):
     for exec_, _ in matches:
         if verbose:
             print(f"Running `pgrep {pgrep_args} {exec_.basename()}`...")
-        subprocess.run(f"pgrep {pgrep_args} {exec_.basename()}", shell=True, check=True)
+        try:
+            subprocess.run(f"pgrep {pgrep_args} {exec_.basename()}", shell=True, check=True)
+        except subprocess.CalledProcessError:
+            sys.exit(-1)
 
 
 if __name__ == "__main__":
