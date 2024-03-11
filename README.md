@@ -6,7 +6,7 @@ familiar with `pgrep`, you can refer to the documentation
 
 It proves particularly helpful in the following scenarios:
 
-- When you're uncertain about the precise name of the file you're searching for
+- When you're uncertain about the precise name of the process you're searching for
   with `pgrep`.
 - In case of typographical errors while typing into `pgrep`.
 
