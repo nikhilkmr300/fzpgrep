@@ -74,23 +74,25 @@ def match_exec_path(exec_path, execs, k, distance_threshold=4):
     return distances[:k]
 
 
-def fzpgrep(exec_path, k=1, verbose=False):
+def fzpgrep(exec_path, pgrep_args, k=1, verbose=False):
     execs = Executable.source_from_path()
 
     matches = match_exec_path(exec_path, execs, k=k)
 
     for exec_, _ in matches:
         if verbose:
-            print(f"Running `pgrep {exec_.basename()}`...")
-        subprocess.run(f"pgrep {exec_.basename()}", shell=True, check=True)
+            print(f"Running `pgrep {pgrep_args} {exec_.basename()}`...")
+        subprocess.run(f"pgrep {pgrep_args} {exec_.basename()}", shell=True, check=True)
 
 
 if __name__ == "__main__":
     argparser = argparse.ArgumentParser(
-        prog=os.path.basename(__file__), description="Performs a fuzzy pgrep"
+        prog=os.path.basename(__file__), description="Performs a fuzzy pgrep", exit_on_error=False
     )
-    argparser.add_argument("exec")
     argparser.add_argument("-q", "--quiet", action="store_true")
-    args = argparser.parse_args()
+    argparser.add_argument("exec")
 
-    fzpgrep(args.exec, verbose=not args.quiet)
+    args, pgrep_args = argparser.parse_known_args()
+    pgrep_args = " ".join(pgrep_args)
+
+    fzpgrep(args.exec, pgrep_args, verbose=not args.quiet)

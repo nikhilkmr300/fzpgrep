@@ -34,3 +34,15 @@ Running `pgrep python`...
 
 If you intend to pipe the command to another process, consider using the `-q`
 flag to suppress the additional text output.
+
+You can pass standard `pgrep` options directly to `fzpgrep`. For example,
+
+```bash
+$ ./fzpgrep.py python -i
+Running `pgrep -i python`...
+818
+819
+4842
+5709
+5769
+```
