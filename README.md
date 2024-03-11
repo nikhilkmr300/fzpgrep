@@ -35,7 +35,7 @@ Running `pgrep python`...
 If you intend to pipe the command to another process, consider using the `-q`
 flag to suppress the additional text output.
 
-You can pass standard `pgrep` options directly to `fzpgrep`. For example,
+You can pass standard `pgrep` options directly to `fzpgrep`. However, make sure the executable is the first argument in the list. For example,
 
 ```bash
 $ ./fzpgrep.py python -i
